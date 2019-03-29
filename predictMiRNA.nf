@@ -94,23 +94,26 @@ process predictByRNA22 {
   sed -i 's/myTranscriptInputFile.txt/${inputfasta}/g' Parameters.properties
   sed -i 's/output.txt/RNA22_predict_result.tsv/g' Parameters.properties 
   java RNA22v2
-   cut -f 1,2  RNA22_predict_result.tsv  > RNA22.tsv
+   awk '{print $2"\t"$1}'  RNA22_predict_result.tsv  > RNA22.tsv
   """
 }
 
 
 
 process get_overlap_result {
-    publishDir path:"Result", mode: "move", overwrite: true
+    publishDir path:"Result/overlap", mode: "move", overwrite: true
   input:
         file miranda from miranda_overlap
         file  targetscan from targetScan_overlap
         file rna22 from RNA22_overlap
   output:
-        file "overlap.csv"
+        file "*.pdf"
+        file "*.txt"
   script:
   """
-        Rscript All_pair_venn.pdf.R 
+        Rscript ${baseDir}/bin/Venn_plot.R
+      
+
   """
 }
 
