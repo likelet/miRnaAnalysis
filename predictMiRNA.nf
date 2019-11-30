@@ -72,7 +72,7 @@ process predictByTargetScan {
   sh ${baseDir}/bin/process_fasta_to_tab.sh ${inputfasta} > process.fa
   targetscan_70.pl ${targetscan_lib} process.fa  targetScan_predict_result.tsv
   rm process.fa 
-  cut -f 1,2 targetScan_predict_result.tsv |  sed '1d' -  > targetScan.tsv  
+  cut -f 1,2 targetScan_predict_result.tsv |  sed '1d' -  | sed 's/miR/hsa-miR/g' | sort | uniq > targetScan.tsv  
   """
 }
 
@@ -87,15 +87,15 @@ process predictByRNA22 {
         file "RNA22_predict_result.tsv"
         file "RNA22.tsv" into RNA22_overlap
 
-  script:
-  """
-  ln -s ${baseDir}/bin/RNA22v2.class .
-  sed 's/myMirInputFile.txt/${microRNA_fasta_db}/g' ${baseDir}/bin/Parameters.properties > Parameters.properties
-  sed -i 's/myTranscriptInputFile.txt/${inputfasta}/g' Parameters.properties
+  shell:
+  '''
+  ln -s !{baseDir}/bin/RNA22v2.class .
+  sed 's/myMirInputFile.txt/!{microRNA_fasta_db}/g' !{baseDir}/bin/Parameters.properties > Parameters.properties
+  sed -i 's/myTranscriptInputFile.txt/!{inputfasta}/g' Parameters.properties
   sed -i 's/output.txt/RNA22_predict_result.tsv/g' Parameters.properties 
   java RNA22v2
    awk '{print $2"\t"$1}'  RNA22_predict_result.tsv  > RNA22.tsv
-  """
+  '''
 }
 
 

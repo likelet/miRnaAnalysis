@@ -7,7 +7,7 @@ n_file = length(file_lst)
 target_lst = list()
 gene_names = array()
 for (i in 1:n_file) {
-  mat <- read.table(file_lst[i], header = T)
+  mat <- read.table(file_lst[i], header = F)
   target_lst[[i]] = paste(mat[,1], mat[,2], sep = "--")
   names(target_lst)[i] = sub(".tsv", "", file_lst[i])
   gene_names = c(gene_names, levels(mat[,1]))
@@ -41,7 +41,7 @@ venn_gene_plot = function(gene){
   grid.draw(fig)
   dev.off()
   overlap <- get.venn.partitions(miRNA)
-  overlap2 = overlap[,c(1:3)]
+  overlap2 = overlap[,c(1:(ncol(overlap)-3))]
   for (i in 1:nrow(overlap)) {
     overlap2$set[i] = overlap$..set..[i]
     overlap2$values[i] = paste(overlap$..values..[i][[1]], collapse = ",")

@@ -1,0 +1,10 @@
+name: sysucc-miRNApre-1.0dev
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - miranda=3.3a
+  - java-jdk=8.0.112
+  - r-venndiagram=1.6.20
+  - 
